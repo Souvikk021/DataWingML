@@ -1,0 +1,38 @@
+DataWing — ML Training Report
+==================================================
+
+Best Model  : Random Forest
+CV Accuracy : 0.9028
+
+All Models:
+              Model  CV Accuracy  Accuracy  F1 Score  Precision  Recall    AUC
+      Random Forest       0.9028    0.8889    0.8889     0.8889  0.8889 0.9634
+  Gradient Boosting       0.8991    0.8556    0.8612     0.8288  0.8963 0.9320
+          SVM (RBF)       0.8491    0.8222    0.8310     0.7919  0.8741 0.9115
+                KNN       0.8194    0.8000    0.8071     0.7793  0.8370 0.8821
+Logistic Regression       0.7963    0.7259    0.7132     0.7480  0.6815 0.8100
+
+Statistically Significant Features:
+  -> Std Letter Width
+  -> Corner Density
+  -> Std Letter Height
+  -> Vertical Regularity Std
+  -> Component Density
+  -> Proportion Consistency Std
+  -> Num Components
+  -> Height Coeff. of Variation
+  -> Total Ink Area
+  -> Total Stroke Length
+  -> Corner Count
+  -> Mean Letter Height
+  -> Margin Alignment Std
+
+Classification Report (Best Model):
+              precision    recall  f1-score   support
+
+      Normal       0.89      0.89      0.89       135
+  Dysgraphic       0.89      0.89      0.89       135
+
+    accuracy                           0.89       270
+   macro avg       0.89      0.89      0.89       270
+weighted avg       0.89      0.89      0.89       270

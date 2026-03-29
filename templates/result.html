@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <title>Results — DataWing</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #f9f8f6; --surface: #fff; --border: #e8e6e1;
+      --text: #1a1a1a; --muted: #888; --radius: 10px;
+      --green: #2d7a4f; --red: #c0392b; --green-bg: #f0faf4; --red-bg: #fdf3f2;
+    }
+    body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; padding: 2rem 1rem; }
+    .wrap { max-width: 680px; margin: 0 auto; }
+
+    /* Top bar */
+    .topbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; flex-wrap: wrap; gap: 0.75rem; }
+    .topbar-left { display: flex; align-items: center; gap: 1rem; }
+    .back { font-size: 0.82rem; color: var(--muted); text-decoration: none; letter-spacing: 0.04em; }
+    .back:hover { color: var(--text); }
+    .logo { font-family: 'DM Mono', monospace; font-size: 0.9rem; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; }
+    .meta { font-size: 0.8rem; color: var(--muted); }
+    .topbar-right { display: flex; gap: 0.75rem; align-items: center; }
+    .btn-sm {
+      font-size: 0.78rem; padding: 0.4rem 0.9rem;
+      border-radius: 6px; cursor: pointer; text-decoration: none;
+      font-family: 'DM Sans', sans-serif; transition: opacity 0.2s;
+    }
+    .btn-outline { border: 1px solid var(--border); background: var(--surface); color: var(--muted); }
+    .btn-outline:hover { color: var(--text); border-color: var(--text); }
+    .btn-dark { background: var(--text); color: white; border: none; }
+    .btn-dark:hover { opacity: 0.8; }
+
+    /* Sample card */
+    .sample { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; margin-bottom: 1.5rem; }
+
+    .sample-header { padding: 0.9rem 1.25rem; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+    .sample-id { font-family: 'DM Mono', monospace; font-size: 0.8rem; color: var(--muted); }
+    .verdict-badge {
+      font-size: 0.75rem; font-weight: 500; padding: 0.25rem 0.7rem;
+      border-radius: 20px; letter-spacing: 0.03em;
+    }
+    .badge-normal { background: var(--green-bg); color: var(--green); }
+    .badge-dysgraphic { background: var(--red-bg); color: var(--red); }
+
+    /* Image strip */
+    .img-strip { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; border-bottom: 1px solid var(--border); }
+    .img-item img { width: 100%; height: 130px; object-fit: cover; display: block; }
+    .img-item span { display: block; text-align: center; font-size: 0.7rem; color: var(--muted); padding: 5px 0; border-top: 1px solid var(--border); background: #fafaf8; }
+    .img-item + .img-item { border-left: 1px solid var(--border); }
+
+    /* Predictions */
+    .predictions { display: grid; grid-template-columns: 1fr 1fr; border-bottom: 1px solid var(--border); }
+    .pred { padding: 1rem 1.25rem; }
+    .pred + .pred { border-left: 1px solid var(--border); }
+    .pred-label { font-size: 0.7rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.5rem; font-family: 'DM Mono', monospace; }
+    .pred-value { font-size: 1rem; font-weight: 500; margin-bottom: 0.2rem; }
+    .pred-value.normal { color: var(--green); }
+    .pred-value.dysgraphic { color: var(--red); }
+    .pred-value.pending { color: var(--muted); }
+    .pred-sub { font-size: 0.75rem; color: var(--muted); margin-bottom: 0.5rem; }
+    .bar-bg { background: var(--border); border-radius: 99px; height: 4px; overflow: hidden; }
+    .bar-fill { height: 100%; border-radius: 99px; }
+    .bar-green { background: var(--green); }
+    .bar-red { background: var(--red); }
+
+    /* Features */
+    .features-section { padding: 1rem 1.25rem; }
+    .features-label { font-size: 0.7rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.75rem; font-family: 'DM Mono', monospace; }
+    .feat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.5rem; }
+    .feat { background: var(--bg); border-radius: 6px; padding: 0.5rem 0.6rem; }
+    .feat .fk { font-size: 0.68rem; color: var(--muted); margin-bottom: 2px; }
+    .feat .fv { font-size: 0.88rem; font-weight: 500; font-family: 'DM Mono', monospace; }
+
+    /* Raw */
+    .raw-toggle { padding: 0.75rem 1.25rem; border-top: 1px solid var(--border); }
+    details summary { font-size: 0.78rem; color: var(--muted); cursor: pointer; list-style: none; }
+    details summary::-webkit-details-marker { display: none; }
+    details summary::before { content: '+ '; font-family: 'DM Mono', monospace; }
+    details[open] summary::before { content: '− '; }
+    details summary:hover { color: var(--text); }
+    pre { font-size: 0.72rem; background: var(--bg); padding: 0.75rem; border-radius: 6px; overflow-x: auto; margin-top: 0.5rem; font-family: 'DM Mono', monospace; line-height: 1.5; }
+
+    /* Bottom nav */
+    .bottom-nav { display: flex; justify-content: center; gap: 1rem; margin-top: 2rem; }
+  </style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="topbar">
+    <div class="topbar-left">
+      <a href="/" class="back">← back</a>
+      <span class="logo">DataWing</span>
+      <span class="meta">{{ results|length }} sample{{ 's' if results|length != 1 }}</span>
+    </div>
+    <div class="topbar-right">
+      <a href="{{ csv_url }}" class="btn-sm btn-outline" download>↓ CSV</a>
+      <a href="/dashboard" class="btn-sm btn-outline" target="_blank">Dashboard ↗</a>
+    </div>
+  </div>
+
+  {% for r in results %}
+  <div class="sample">
+
+    <div class="sample-header">
+      <span class="sample-id">{{ r.source_filename }}</span>
+      {% set ml_dysgraphic = r.features.ml_prediction and 'Dysgraphic' in r.features.ml_prediction %}
+      {% set rule_dysgraphic = 'Dysgraphic' in r.features.dysgraphia_label %}
+      {% if ml_dysgraphic and rule_dysgraphic %}
+        <span class="verdict-badge badge-dysgraphic">Dysgraphic</span>
+      {% elif rule_dysgraphic and not ml_dysgraphic %}
+        <span class="verdict-badge badge-dysgraphic" title="Rule-based: Dysgraphic, ML: Normal">&#9888; Review Needed</span>
+      {% elif ml_dysgraphic and not rule_dysgraphic %}
+        <span class="verdict-badge badge-dysgraphic" title="ML: Dysgraphic, Rule-based: Normal">&#9888; Review Needed</span>
+      {% else %}
+        <span class="verdict-badge badge-normal">Normal</span>
+      {% endif %}
+    </div>
+
+    <div class="img-strip">
+      <div class="img-item"><img src="{{ r.upload_url }}" alt="original"><span>Original</span></div>
+      <div class="img-item"><img src="{{ r.gray_url }}" alt="gray"><span>Grayscale</span></div>
+      <div class="img-item"><img src="{{ r.thresh_url }}" alt="thresh"><span>Threshold</span></div>
+      <div class="img-item"><img src="{{ r.skel_url }}" alt="skel"><span>Skeleton</span></div>
+    </div>
+
+    <div class="predictions">
+      <div class="pred">
+        <div class="pred-label">Rule-based</div>
+        <div class="pred-value {% if 'Dysgraphic' in r.features.dysgraphia_label %}dysgraphic{% else %}normal{% endif %}">
+          {% if 'Dysgraphic' in r.features.dysgraphia_label %}Dysgraphic{% else %}Normal{% endif %}
+        </div>
+        <div class="pred-sub">{{ r.features.dysgraphia_score }}/6 indicators triggered</div>
+      </div>
+      <div class="pred">
+        <div class="pred-label">ML Model</div>
+        {% if r.features.ml_prediction and 'not trained' not in r.features.ml_prediction|lower and 'error' not in r.features.ml_prediction|lower %}
+          <div class="pred-value {% if 'Dysgraphic' in r.features.ml_prediction %}dysgraphic{% else %}normal{% endif %}">
+            {{ r.features.ml_prediction }}
+          </div>
+          {% if r.features.ml_confidence %}
+            <div class="pred-sub">{{ r.features.ml_confidence }}% confidence</div>
+            <div class="bar-bg">
+              <div class="bar-fill {% if 'Dysgraphic' in r.features.ml_prediction %}bar-red{% else %}bar-green{% endif %}"
+                   style="width:{{ r.features.ml_confidence }}%"></div>
+            </div>
+          {% endif %}
+        {% else %}
+          <div class="pred-value pending">—</div>
+          <div class="pred-sub">Run train.py to enable</div>
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="features-section">
+      <div class="features-label">Extracted Features</div>
+      <div class="feat-grid">
+        <div class="feat"><div class="fk">Height CV</div><div class="fv">{{ "%.3f"|format(r.features.letter_height_cv) }}</div></div>
+        <div class="feat"><div class="fk">Baseline Std</div><div class="fv">{{ "%.3f"|format(r.features.horizontal_regularity_baseline_std) }}</div></div>
+        <div class="feat"><div class="fk">Letter Spacing</div><div class="fv">{{ "%.1f"|format(r.features.letter_spacing) }}</div></div>
+        <div class="feat"><div class="fk">Corner Density</div><div class="fv">{{ "%.4f"|format(r.features.corner_density) }}</div></div>
+        <div class="feat"><div class="fk">Mean Height</div><div class="fv">{{ "%.1f"|format(r.features.mean_letter_height) }}</div></div>
+        <div class="feat"><div class="fk">Mean Width</div><div class="fv">{{ "%.1f"|format(r.features.mean_letter_width) }}</div></div>
+        <div class="feat"><div class="fk">Word Spacing</div><div class="fv">{{ "%.1f"|format(r.features.word_spacing) }}</div></div>
+        <div class="feat"><div class="fk">Components</div><div class="fv">{{ r.features.num_components }}</div></div>
+      </div>
+    </div>
+
+    <div class="raw-toggle">
+      <details>
+        <summary>raw feature dictionary</summary>
+        <pre>{{ r.features|tojson(indent=2) }}</pre>
+      </details>
+    </div>
+
+  </div>
+  {% endfor %}
+
+  <div class="bottom-nav">
+    <a href="/" class="btn-sm btn-dark">Process more</a>
+    <a href="/dashboard" class="btn-sm btn-outline" target="_blank">View dashboard ↗</a>
+  </div>
+
+</div>
+</body>
+</html>

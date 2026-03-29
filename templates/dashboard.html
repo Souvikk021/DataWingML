@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <title>Dashboard — DataWing</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #f9f8f6; --surface: #fff; --border: #e8e6e1;
+      --text: #1a1a1a; --muted: #888; --radius: 10px;
+      --green: #2d7a4f; --green-bg: #f0faf4;
+    }
+    body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); padding: 2rem 1rem; }
+    .wrap { max-width: 900px; margin: 0 auto; }
+
+    /* Topbar */
+    .topbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2.5rem; flex-wrap: wrap; gap: 0.75rem; }
+    .topbar-left { display: flex; align-items: center; gap: 1rem; }
+    .back { font-size: 0.82rem; color: var(--muted); text-decoration: none; }
+    .back:hover { color: var(--text); }
+    .logo { font-family: 'DM Mono', monospace; font-size: 0.9rem; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; }
+    .page-title { font-size: 0.82rem; color: var(--muted); }
+    .btn-sm { font-size: 0.78rem; padding: 0.4rem 0.9rem; border-radius: 6px; cursor: pointer; text-decoration: none; font-family: 'DM Sans', sans-serif; border: 1px solid var(--border); background: var(--surface); color: var(--muted); transition: color 0.2s, border-color 0.2s; }
+    .btn-sm:hover { color: var(--text); border-color: var(--text); }
+    .btn-dark { background: var(--text); color: white !important; border-color: var(--text); }
+    .btn-dark:hover { opacity: 0.8; }
+
+    /* No data */
+    .empty { text-align: center; padding: 4rem 2rem; }
+    .empty p { font-size: 0.88rem; color: var(--muted); margin-top: 0.5rem; line-height: 1.6; }
+    .empty code { font-family: 'DM Mono', monospace; font-size: 0.82rem; background: var(--border); padding: 2px 6px; border-radius: 4px; }
+
+    /* Section */
+    .section-label { font-family: 'DM Mono', monospace; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); margin-bottom: 1rem; margin-top: 2rem; }
+
+    /* Stat cards */
+    .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.75rem; }
+    .stat { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1rem 1.25rem; }
+    .stat .sv { font-family: 'DM Mono', monospace; font-size: 1.6rem; font-weight: 500; color: var(--text); line-height: 1; margin-bottom: 0.3rem; }
+    .stat .sk { font-size: 0.72rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; }
+    .stat.highlight .sv { color: var(--green); }
+
+    /* Model table */
+    .table-wrap { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+    table { width: 100%; border-collapse: collapse; }
+    thead th { padding: 0.65rem 1rem; font-size: 0.72rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; font-weight: 500; text-align: left; border-bottom: 1px solid var(--border); background: #fafaf8; font-family: 'DM Mono', monospace; }
+    tbody td { padding: 0.7rem 1rem; font-size: 0.85rem; border-bottom: 1px solid var(--border); }
+    tbody tr:last-child td { border-bottom: none; }
+    tbody tr.best { background: var(--green-bg); }
+    .model-name { font-weight: 500; display: flex; align-items: center; gap: 0.5rem; }
+    .best-tag { font-size: 0.65rem; background: var(--green); color: white; padding: 1px 6px; border-radius: 3px; font-family: 'DM Mono', monospace; letter-spacing: 0.04em; }
+
+    .bar-cell { display: flex; align-items: center; gap: 8px; }
+    .mini-bar { flex: 1; background: var(--border); border-radius: 99px; height: 4px; overflow: hidden; max-width: 60px; }
+    .mini-bar-fill { height: 100%; border-radius: 99px; background: var(--text); }
+    .bar-val { font-family: 'DM Mono', monospace; font-size: 0.8rem; min-width: 38px; }
+
+    /* Charts */
+    .chart-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+    .chart-grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem; }
+    .chart-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+    .chart-card.wide { grid-column: span 2; }
+    .chart-card.full { grid-column: 1 / -1; }
+    .chart-label { font-size: 0.7rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; padding: 0.65rem 1rem; border-bottom: 1px solid var(--border); font-family: 'DM Mono', monospace; background: #fafaf8; }
+    .chart-card img { width: 100%; height: auto; display: block; }
+
+    /* Report */
+    .report-box { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+    pre { font-size: 0.75rem; padding: 1rem; overflow-x: auto; font-family: 'DM Mono', monospace; line-height: 1.6; color: var(--muted); background: #fafaf8; }
+
+    .bottom-nav { display: flex; justify-content: center; gap: 1rem; margin-top: 2.5rem; padding-bottom: 2rem; }
+
+    @media (max-width: 600px) {
+      .stats { grid-template-columns: repeat(2, 1fr); }
+      .chart-grid-2, .chart-grid-3 { grid-template-columns: 1fr; }
+      .chart-card.wide, .chart-card.full { grid-column: span 1; }
+    }
+  </style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="topbar">
+    <div class="topbar-left">
+      <a href="javascript:history.back()" class="back">← back</a>
+      <span class="logo">DataWing</span>
+      <span class="page-title">Analysis Dashboard</span>
+    </div>
+    <div style="display:flex;gap:0.5rem">
+      <a href="/" class="btn-sm">Upload</a>
+      <a href="/dashboard" class="btn-sm">Refresh</a>
+    </div>
+  </div>
+
+  {% if not model_results %}
+  <div class="empty">
+    <div style="font-size:2rem;margin-bottom:0.75rem">○</div>
+    <p>No training data yet.<br>Run <code>python train.py</code> to populate this dashboard.</p>
+  </div>
+
+  {% else %}
+
+  <!-- STATS -->
+  {% set best = model_results | selectattr("Model", "equalto", best_model_name) | list | first %}
+  <div class="section-label">Summary</div>
+  <div class="stats">
+    <div class="stat highlight">
+      <div class="sv">{{ (best.Accuracy * 100)|round(1) }}%</div>
+      <div class="sk">Best Accuracy</div>
+    </div>
+    <div class="stat">
+      <div class="sv">{{ (best["F1 Score"] * 100)|round(1) }}%</div>
+      <div class="sk">F1 Score</div>
+    </div>
+    <div class="stat">
+      <div class="sv">{{ (best.AUC * 100)|round(1) }}%</div>
+      <div class="sk">AUC</div>
+    </div>
+    <div class="stat">
+      <div class="sv" style="font-size:0.95rem;padding-top:0.35rem">{{ best_model_name }}</div>
+      <div class="sk">Best Model</div>
+    </div>
+  </div>
+
+  <!-- MODEL TABLE -->
+  <div class="section-label">Model Comparison</div>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Model</th>
+          <th>CV Accuracy</th>
+          <th>Test Accuracy</th>
+          <th>F1</th>
+          <th>Precision</th>
+          <th>Recall</th>
+          <th>AUC</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for row in model_results %}
+        <tr {% if row.Model == best_model_name %}class="best"{% endif %}>
+          <td>
+            <div class="model-name">
+              {{ row.Model }}
+              {% if row.Model == best_model_name %}<span class="best-tag">best</span>{% endif %}
+            </div>
+          </td>
+          {% for col in ["CV Accuracy","Accuracy","F1 Score","Precision","Recall","AUC"] %}
+          <td>
+            <div class="bar-cell">
+              <div class="mini-bar"><div class="mini-bar-fill" style="width:{{ (row[col]*100)|round }}%"></div></div>
+              <span class="bar-val">{{ (row[col]*100)|round(1) }}%</span>
+            </div>
+          </td>
+          {% endfor %}
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <!-- PERFORMANCE CHARTS -->
+  <div class="section-label">Model Performance</div>
+  <div class="chart-grid-2">
+    {% if "model_comparison" in charts %}
+    <div class="chart-card wide">
+      <div class="chart-label">Accuracy · F1 · Precision · Recall</div>
+      <img src="{{ charts.model_comparison }}" alt="">
+    </div>
+    {% endif %}
+    {% if "roc_curves" in charts %}
+    <div class="chart-card">
+      <div class="chart-label">ROC Curves</div>
+      <img src="{{ charts.roc_curves }}" alt="">
+    </div>
+    {% endif %}
+    {% if "cv_score_distribution" in charts %}
+    <div class="chart-card">
+      <div class="chart-label">Cross-Validation Distribution</div>
+      <img src="{{ charts.cv_score_distribution }}" alt="">
+    </div>
+    {% endif %}
+    {% if "confusion_matrices" in charts %}
+    <div class="chart-card full">
+      <div class="chart-label">Confusion Matrices</div>
+      <img src="{{ charts.confusion_matrices }}" alt="">
+    </div>
+    {% endif %}
+  </div>
+
+  <!-- FEATURE CHARTS -->
+  <div class="section-label">Feature Relevance Analysis</div>
+  <div class="chart-grid-2">
+    {% if "feature_importance_rf" in charts %}
+    <div class="chart-card">
+      <div class="chart-label">Random Forest Importance</div>
+      <img src="{{ charts.feature_importance_rf }}" alt="">
+    </div>
+    {% endif %}
+    {% if "feature_relevance_selectkbest" in charts %}
+    <div class="chart-card">
+      <div class="chart-label">SelectKBest · ANOVA F-Score</div>
+      <img src="{{ charts.feature_relevance_selectkbest }}" alt="">
+    </div>
+    {% endif %}
+    {% if "class_distribution" in charts %}
+    <div class="chart-card">
+      <div class="chart-label">Class Distribution</div>
+      <img src="{{ charts.class_distribution }}" alt="">
+    </div>
+    {% endif %}
+    {% if "correlation_heatmap" in charts %}
+    <div class="chart-card">
+      <div class="chart-label">Feature Correlation Heatmap</div>
+      <img src="{{ charts.correlation_heatmap }}" alt="">
+    </div>
+    {% endif %}
+  </div>
+
+  <!-- REPORT -->
+  {% if report_text %}
+  <div class="section-label">Training Report</div>
+  <div class="report-box">
+    <pre>{{ report_text }}</pre>
+  </div>
+  {% endif %}
+
+  {% endif %}
+
+  <div class="bottom-nav">
+    <a href="/" class="btn-sm btn-dark">Upload handwriting</a>
+    <a href="/dashboard" class="btn-sm">Refresh</a>
+  </div>
+
+</div>
+</body>
+</html>

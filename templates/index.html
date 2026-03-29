@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <title>DataWing</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #f9f8f6;
+      --surface: #ffffff;
+      --border: #e8e6e1;
+      --text: #1a1a1a;
+      --muted: #888;
+      --accent: #1a1a1a;
+      --green: #2d7a4f;
+      --red: #c0392b;
+      --radius: 10px;
+    }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem 1rem;
+    }
+
+    .wrap { width: 100%; max-width: 480px; }
+
+    /* Header */
+    .header { margin-bottom: 2.5rem; }
+    .logo {
+      font-family: 'DM Mono', monospace;
+      font-size: 1rem;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text);
+      margin-bottom: 0.4rem;
+    }
+    .tagline { font-size: 0.82rem; color: var(--muted); line-height: 1.5; }
+
+    .status-dot {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 0.78rem; color: var(--muted);
+      margin-top: 0.75rem;
+    }
+    .dot { width: 6px; height: 6px; border-radius: 50%; }
+    .dot.on  { background: var(--green); }
+    .dot.off { background: #ccc; }
+
+    /* Upload zone */
+    .upload-zone {
+      border: 1.5px dashed var(--border);
+      border-radius: var(--radius);
+      background: var(--surface);
+      padding: 2.5rem 1.5rem;
+      text-align: center;
+      cursor: pointer;
+      transition: border-color 0.2s, background 0.2s;
+      margin-bottom: 1rem;
+    }
+    .upload-zone:hover { border-color: var(--text); background: #fafaf9; }
+    .upload-zone input { display: none; }
+    .upload-icon { font-size: 1.5rem; margin-bottom: 0.75rem; }
+    .upload-zone p { font-size: 0.88rem; color: var(--muted); margin-bottom: 0.4rem; }
+    .upload-zone span { font-size: 0.75rem; color: #bbb; font-family: 'DM Mono', monospace; }
+    #file-name {
+      font-size: 0.82rem; color: var(--text);
+      font-family: 'DM Mono', monospace;
+      margin-top: 0.75rem; display: none;
+    }
+
+    /* Button */
+    .btn-primary {
+      width: 100%; padding: 0.75rem;
+      background: var(--text); color: white;
+      border: none; border-radius: var(--radius);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.9rem; font-weight: 500;
+      cursor: pointer; transition: opacity 0.2s;
+      letter-spacing: 0.02em;
+    }
+    .btn-primary:hover { opacity: 0.85; }
+
+    /* Nav */
+    .nav { display: flex; justify-content: center; gap: 1.5rem; margin-top: 1.5rem; }
+    .nav a {
+      font-size: 0.8rem; color: var(--muted);
+      text-decoration: none; letter-spacing: 0.04em;
+      transition: color 0.2s;
+    }
+    .nav a:hover { color: var(--text); }
+
+    /* Warning */
+    .warning {
+      background: #fffbf0; border: 1px solid #f0e0a0;
+      border-radius: var(--radius); padding: 0.75rem 1rem;
+      font-size: 0.8rem; color: #7a5c00; margin-bottom: 1rem;
+      line-height: 1.5;
+    }
+    .warning code { font-family: 'DM Mono', monospace; font-size: 0.78rem; }
+
+    .divider { height: 1px; background: var(--border); margin: 1.5rem 0; }
+
+    .features { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem; margin-top: 1rem; }
+    .feature { padding: 0.75rem; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); }
+    .feature .f-icon { font-size: 1rem; margin-bottom: 0.3rem; }
+    .feature p { font-size: 0.75rem; color: var(--muted); line-height: 1.4; }
+  </style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="header">
+    <div class="logo">DataWing</div>
+    <p class="tagline">Enhanced dysgraphia prediction via<br>relevant feature extraction from handwriting.</p>
+    <div class="status-dot">
+      <span class="dot {% if model_ready %}on{% else %}off{% endif %}"></span>
+      {% if model_ready %}ML model active{% else %}Rule-based mode only{% endif %}
+    </div>
+  </div>
+
+  {% if not model_ready %}
+  <div class="warning">
+    No trained model found. Add images to <code>dataset/</code> folders and run <code>python train.py</code>.
+  </div>
+  {% endif %}
+
+  <form method="post" action="/upload" enctype="multipart/form-data">
+    <div class="upload-zone" onclick="document.getElementById('fi').click()">
+      <div class="upload-icon">↑</div>
+      <p>Drop a handwriting image or click to browse</p>
+      <span>PNG · JPG · TIFF · PDF</span>
+      <input type="file" id="fi" name="file" multiple accept=".png,.jpg,.jpeg,.tif,.tiff,.pdf" required onchange="handleFile(this)"/>
+      <div id="file-name"></div>
+    </div>
+    <button class="btn-primary" type="submit">Analyse</button>
+  </form>
+
+  <div class="divider"></div>
+
+  <div class="features">
+    <div class="feature">
+      <div class="f-icon">⌗</div>
+      <p>18 features extracted via OpenCV</p>
+    </div>
+    <div class="feature">
+      <div class="f-icon">◎</div>
+      <p>Rule-based + ML prediction</p>
+    </div>
+    <div class="feature">
+      <div class="f-icon">↗</div>
+      <p>5 models compared & ranked</p>
+    </div>
+  </div>
+
+  <div class="nav">
+    <a href="/">Upload</a>
+    <a href="/dashboard">Dashboard</a>
+  </div>
+
+</div>
+<script>
+function handleFile(input) {
+  const el = document.getElementById('file-name');
+  if (!input.files.length) { el.style.display='none'; return; }
+  el.style.display = 'block';
+  el.textContent = input.files.length === 1 ? input.files[0].name : `${input.files.length} files selected`;
+}
+</script>
+</body>
+</html>

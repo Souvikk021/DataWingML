@@ -1,0 +1,11 @@
+Flask==2.3.2
+numpy
+opencv-contrib-python
+scikit-image
+pandas
+scipy
+scikit-learn
+joblib
+PyMuPDF
+matplotlib
+seaborn
