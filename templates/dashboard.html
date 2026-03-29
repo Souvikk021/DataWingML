@@ -14,7 +14,6 @@
     body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); padding: 2rem 1rem; }
     .wrap { max-width: 900px; margin: 0 auto; }
 
-    /* Topbar */
     .topbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2.5rem; flex-wrap: wrap; gap: 0.75rem; }
     .topbar-left { display: flex; align-items: center; gap: 1rem; }
     .back { font-size: 0.82rem; color: var(--muted); text-decoration: none; }
@@ -26,22 +25,18 @@
     .btn-dark { background: var(--text); color: white !important; border-color: var(--text); }
     .btn-dark:hover { opacity: 0.8; }
 
-    /* No data */
     .empty { text-align: center; padding: 4rem 2rem; }
     .empty p { font-size: 0.88rem; color: var(--muted); margin-top: 0.5rem; line-height: 1.6; }
     .empty code { font-family: 'DM Mono', monospace; font-size: 0.82rem; background: var(--border); padding: 2px 6px; border-radius: 4px; }
 
-    /* Section */
     .section-label { font-family: 'DM Mono', monospace; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); margin-bottom: 1rem; margin-top: 2rem; }
 
-    /* Stat cards */
     .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.75rem; }
     .stat { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1rem 1.25rem; }
     .stat .sv { font-family: 'DM Mono', monospace; font-size: 1.6rem; font-weight: 500; color: var(--text); line-height: 1; margin-bottom: 0.3rem; }
     .stat .sk { font-size: 0.72rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; }
     .stat.highlight .sv { color: var(--green); }
 
-    /* Model table */
     .table-wrap { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
     table { width: 100%; border-collapse: collapse; }
     thead th { padding: 0.65rem 1rem; font-size: 0.72rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; font-weight: 500; text-align: left; border-bottom: 1px solid var(--border); background: #fafaf8; font-family: 'DM Mono', monospace; }
@@ -56,16 +51,13 @@
     .mini-bar-fill { height: 100%; border-radius: 99px; background: var(--text); }
     .bar-val { font-family: 'DM Mono', monospace; font-size: 0.8rem; min-width: 38px; }
 
-    /* Charts */
     .chart-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
-    .chart-grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem; }
     .chart-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
     .chart-card.wide { grid-column: span 2; }
     .chart-card.full { grid-column: 1 / -1; }
     .chart-label { font-size: 0.7rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; padding: 0.65rem 1rem; border-bottom: 1px solid var(--border); font-family: 'DM Mono', monospace; background: #fafaf8; }
     .chart-card img { width: 100%; height: auto; display: block; }
 
-    /* Report */
     .report-box { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
     pre { font-size: 0.75rem; padding: 1rem; overflow-x: auto; font-family: 'DM Mono', monospace; line-height: 1.6; color: var(--muted); background: #fafaf8; }
 
@@ -73,7 +65,7 @@
 
     @media (max-width: 600px) {
       .stats { grid-template-columns: repeat(2, 1fr); }
-      .chart-grid-2, .chart-grid-3 { grid-template-columns: 1fr; }
+      .chart-grid-2 { grid-template-columns: 1fr; }
       .chart-card.wide, .chart-card.full { grid-column: span 1; }
     }
   </style>
@@ -95,13 +87,11 @@
 
   {% if not model_results %}
   <div class="empty">
-    <div style="font-size:2rem;margin-bottom:0.75rem">○</div>
     <p>No training data yet.<br>Run <code>python train.py</code> to populate this dashboard.</p>
   </div>
 
   {% else %}
 
-  <!-- STATS -->
   {% set best = model_results | selectattr("Model", "equalto", best_model_name) | list | first %}
   <div class="section-label">Summary</div>
   <div class="stats">
@@ -123,7 +113,6 @@
     </div>
   </div>
 
-  <!-- MODEL TABLE -->
   <div class="section-label">Model Comparison</div>
   <div class="table-wrap">
     <table>
@@ -161,7 +150,6 @@
     </table>
   </div>
 
-  <!-- PERFORMANCE CHARTS -->
   <div class="section-label">Model Performance</div>
   <div class="chart-grid-2">
     {% if "model_comparison" in charts %}
@@ -190,7 +178,6 @@
     {% endif %}
   </div>
 
-  <!-- FEATURE CHARTS -->
   <div class="section-label">Feature Relevance Analysis</div>
   <div class="chart-grid-2">
     {% if "feature_importance_rf" in charts %}
@@ -219,7 +206,6 @@
     {% endif %}
   </div>
 
-  <!-- REPORT -->
   {% if report_text %}
   <div class="section-label">Training Report</div>
   <div class="report-box">
