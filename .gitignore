@@ -10,3 +10,19 @@ build/
 .DS_Store
 *.log
 .env
+
+# Exclude dataset files but keep folder structure (via .gitkeep files)
+dataset/**/*.jpg
+dataset/**/*.jpeg
+dataset/**/*.png
+dataset/**/*.csv
+dataset/**/*.xlsx
+dataset/**/*.npy
+dataset/**/*.npz
+dataset/**/*.h5
+dataset/**/*.hdf5
+dataset/**/*.pkl
+dataset/**/*.zip
+dataset/**/*.tar
+dataset/**/*.gz
+!dataset/**/.gitkeep

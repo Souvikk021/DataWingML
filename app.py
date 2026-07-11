@@ -262,7 +262,7 @@ def dashboard():
 
     report_text = None
     if os.path.exists("model_report.txt"):
-        with open("model_report.txt") as f:
+        with open("model_report.txt", encoding="utf-8", errors="replace") as f:
             report_text = f.read()
 
     return render_template("dashboard.html",
@@ -272,5 +272,93 @@ def dashboard():
                            report_text=report_text,
                            model_ready=(ml_model is not None))
 
+
+MULTI_CHARTS_DIR = "static/charts/multi_dataset"
+
+@app.route("/multi-analysis")
+def multi_analysis():
+    per_dataset_csv = os.path.join(MULTI_CHARTS_DIR, "per_dataset_results.csv")
+    pooled_csv      = os.path.join(MULTI_CHARTS_DIR, "pooled_results.csv")
+    matrix_csv      = os.path.join(MULTI_CHARTS_DIR, "cross_dataset_matrix.csv")
+    anova_csv       = os.path.join(MULTI_CHARTS_DIR, "feature_shift_anova.csv")
+    summary_txt     = os.path.join(MULTI_CHARTS_DIR, "final_summary.txt")
+
+    has_data = os.path.exists(per_dataset_csv)
+
+    datasets = []
+    overall_best = None
+    pooled_best = None
+    matrix_rows = None
+    anova_rows = None
+    summary_text = None
+
+    if has_data:
+        per_df = pd.read_csv(per_dataset_csv)
+        for name, group in per_df.groupby("Dataset"):
+            group_sorted = group.sort_values("CV Accuracy", ascending=False).reset_index(drop=True)
+            best_row = group_sorted.iloc[0]
+            datasets.append({
+                "name": name,
+                "best_model": best_row["Model"],
+                "rows": group_sorted.to_dict(orient="records"),
+            })
+
+        # overall best across every individual dataset+model combination
+        overall_best_row = per_df.loc[per_df["CV Accuracy"].idxmax()]
+        overall_best = overall_best_row.to_dict()
+
+        if os.path.exists(pooled_csv):
+            pooled_df = pd.read_csv(pooled_csv)
+            pooled_best_row = pooled_df.loc[pooled_df["CV Accuracy"].idxmax()]
+            pooled_best = pooled_best_row.to_dict()
+            pooled_rows = pooled_df.sort_values("CV Accuracy", ascending=False).to_dict(orient="records")
+        else:
+            pooled_rows = None
+
+        if os.path.exists(matrix_csv):
+            matrix_df = pd.read_csv(matrix_csv, index_col=0)
+            matrix_rows = {
+                "columns": list(matrix_df.columns),
+                "rows": [
+                    {
+                        "label": idx,
+                        "cells": [
+                            {"col": col, "value": (None if pd.isna(val) else float(val))}
+                            for col, val in zip(matrix_df.columns, row.tolist())
+                        ],
+                    }
+                    for idx, row in matrix_df.iterrows()
+                ],
+            }
+
+        if os.path.exists(anova_csv):
+            anova_df = pd.read_csv(anova_csv).sort_values("p-value").head(10)
+            anova_rows = anova_df.to_dict(orient="records")
+
+        if os.path.exists(summary_txt):
+            with open(summary_txt, encoding="utf-8", errors="replace") as f:
+                summary_text = f.read()
+
+    chart_files = {
+        "cross_dataset_matrix":   "charts/multi_dataset/cross_dataset_matrix.png",
+        "feature_shift_boxplots": "charts/multi_dataset/feature_shift_boxplots.png",
+    }
+    charts = {k: url_for("static", filename=v)
+              for k, v in chart_files.items()
+              if os.path.exists(os.path.join("static", v))}
+
+    return render_template("multi_analysis.html",
+                           has_data=has_data,
+                           datasets=datasets,
+                           overall_best=overall_best,
+                           pooled_best=pooled_best,
+                           pooled_rows=pooled_rows if has_data else None,
+                           matrix=matrix_rows,
+                           anova_rows=anova_rows,
+                           summary_text=summary_text,
+                           charts=charts,
+                           model_ready=(ml_model is not None))
+
 if __name__ == "__main__":
-    app.run(debug=True, port=8501)
+    debug_mode = os.environ.get("FLASK_DEBUG", "0") == "1"
+    app.run(debug=debug_mode, host="0.0.0.0", port=int(os.environ.get("PORT", 8501)))
