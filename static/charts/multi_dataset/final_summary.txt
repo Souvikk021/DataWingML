@@ -4,15 +4,15 @@ DataWing — Multi-Dataset Comparative Analysis Summary
 Best single dataset+model combination:
   Dataset : mendeley
   Model   : Random Forest
-  CV Acc  : 0.8484   Accuracy: 0.8715   F1: 0.8571
+  CV Acc  : 0.8484   Accuracy: 0.8675   F1: 0.8533
 
 Best pooled (all-3-combined) model:
   Model   : Gradient Boosting
-  CV Acc  : 0.7282   Accuracy: 0.7318   F1: 0.6077
+  CV Acc  : 0.7295   Accuracy: 0.727   F1: 0.6043
 
 Generalization check:
-  Avg within-dataset accuracy : 0.7453
-  Avg cross-dataset accuracy  : 0.5098
+  Avg within-dataset accuracy : 0.7478
+  Avg cross-dataset accuracy  : 0.5173
   Verdict: Large drop when testing across datasets -> the model is overfitting to dataset-specific quirks (scanner/pen/paper), not learning general dysgraphia patterns.
 
 Note on methodology: the pooled model and cross-dataset matrix above were trained using only 5 of the 18 features (Mean Letter Height, Mean Letter Width, Corner Density, Component Density, Slant Angle (deg)), since the other features (letter/word spacing, baseline/margin regularity, and raw content-scale features) are not meaningfully comparable across datasets with different content granularity (single letters vs. single lines vs. full paragraphs). Per-dataset results in Section 10.3 still use the full 18-feature set.

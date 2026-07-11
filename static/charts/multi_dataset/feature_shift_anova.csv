@@ -1,19 +1,19 @@
 Feature,F-stat,p-value,Significant Shift (p<0.05),Core Feature (comparable across datasets)
-Mean Letter Height,7437.242796634367,0.0,True,True
-Std Letter Height,15337.925503075685,0.0,True,False
-Mean Letter Width,6877.885940305055,0.0,True,True
+Mean Letter Height,7437.2427966343685,0.0,True,True
+Std Letter Height,15337.925503075676,0.0,True,False
+Mean Letter Width,6877.885940305053,0.0,True,True
 Std Letter Width,22321.003239918693,0.0,True,False
-Height Coeff. of Variation,9777.076521756586,0.0,True,False
-Proportion Consistency Std,2783.765877301718,0.0,True,False
+Height Coeff. of Variation,9777.076521756577,0.0,True,False
+Proportion Consistency Std,2783.765877301719,0.0,True,False
 Word Spacing,5956.668996076284,0.0,True,False
-Total Stroke Length,15086.937212807466,0.0,True,False
+Total Stroke Length,15086.937212807474,0.0,True,False
 Total Ink Area,11051.530298347661,0.0,True,False
-Corner Count,176071.66927438887,0.0,True,False
-Corner Density,1078.8626995109325,0.0,True,True
-Num Components,31856.27633661572,0.0,True,False
+Corner Count,176071.66927439178,0.0,True,False
+Corner Density,1078.862699510933,0.0,True,True
+Num Components,31856.27633661567,0.0,True,False
 Baseline Regularity Std,25750.921700380142,0.0,True,False
 Component Density,1592.9803965798349,0.0,True,True
-Vertical Regularity Std,15337.925503075685,0.0,True,False
-Margin Alignment Std,65837.83540026688,0.0,True,False
-Letter Spacing,410.5921315836431,3.3925979519139644e-174,True,False
+Vertical Regularity Std,15337.925503075676,0.0,True,False
+Margin Alignment Std,65837.83540026678,0.0,True,False
+Letter Spacing,410.5921315836432,3.3925979519085648e-174,True,False
 Slant Angle (deg),,,False,True
