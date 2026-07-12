@@ -1,19 +1,19 @@
 Feature,F-stat,p-value,Significant Shift (p<0.05),Core Feature (comparable across datasets)
-Mean Letter Height,7437.2427966343685,0.0,True,True
-Std Letter Height,15337.925503075676,0.0,True,False
-Mean Letter Width,6877.885940305053,0.0,True,True
-Std Letter Width,22321.003239918693,0.0,True,False
-Height Coeff. of Variation,9777.076521756577,0.0,True,False
-Proportion Consistency Std,2783.765877301719,0.0,True,False
-Word Spacing,5956.668996076284,0.0,True,False
-Total Stroke Length,15086.937212807474,0.0,True,False
-Total Ink Area,11051.530298347661,0.0,True,False
-Corner Count,176071.66927439178,0.0,True,False
-Corner Density,1078.862699510933,0.0,True,True
-Num Components,31856.27633661567,0.0,True,False
-Baseline Regularity Std,25750.921700380142,0.0,True,False
-Component Density,1592.9803965798349,0.0,True,True
-Vertical Regularity Std,15337.925503075676,0.0,True,False
-Margin Alignment Std,65837.83540026678,0.0,True,False
-Letter Spacing,410.5921315836432,3.3925979519085648e-174,True,False
+Mean Letter Height,12041.082069113123,0.0,True,True
+Std Letter Height,26191.757361826018,0.0,True,False
+Mean Letter Width,16244.979533108783,0.0,True,True
+Std Letter Width,53478.92350863229,0.0,True,False
+Height Coeff. of Variation,11446.47976110047,0.0,True,False
+Proportion Consistency Std,6882.872452272176,0.0,True,False
+Letter Spacing,985.592963540329,0.0,True,False
+Word Spacing,11881.030680445834,0.0,True,False
+Total Stroke Length,36265.85900518564,0.0,True,False
+Corner Count,439106.8918552497,0.0,True,False
+Corner Density,1157.2786813192388,0.0,True,True
+Num Components,76567.73000318979,0.0,True,False
+Total Ink Area,27439.944643326537,0.0,True,False
+Component Density,1684.5917830714513,0.0,True,True
+Baseline Regularity Std,62383.57193103624,0.0,True,False
+Vertical Regularity Std,26191.757361826018,0.0,True,False
+Margin Alignment Std,161649.87121694422,0.0,True,False
 Slant Angle (deg),,,False,True

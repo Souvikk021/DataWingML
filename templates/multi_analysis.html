@@ -1,304 +1,617 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="utf-8"/>
+  <meta charset="utf-8" />
   <title>Multi-Dataset Analysis — DataWing</title>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap"
+    rel="stylesheet" />
   <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    :root {
-      --bg: #f9f8f6; --surface: #fff; --border: #e8e6e1;
-      --text: #1a1a1a; --muted: #888; --radius: 10px;
-      --green: #2d7a4f; --green-bg: #f0faf4;
-      --amber: #b45309; --amber-bg: #fef8ee;
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
     }
-    body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); padding: 2rem 1rem; }
-    .wrap { max-width: 900px; margin: 0 auto; }
 
-    .topbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2.5rem; flex-wrap: wrap; gap: 0.75rem; }
-    .topbar-left { display: flex; align-items: center; gap: 1rem; }
-    .back { font-size: 0.82rem; color: var(--muted); text-decoration: none; }
-    .back:hover { color: var(--text); }
-    .logo { font-family: 'DM Mono', monospace; font-size: 0.9rem; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; }
-    .page-title { font-size: 0.82rem; color: var(--muted); }
-    .btn-sm { font-size: 0.78rem; padding: 0.4rem 0.9rem; border-radius: 6px; cursor: pointer; text-decoration: none; font-family: 'DM Sans', sans-serif; border: 1px solid var(--border); background: var(--surface); color: var(--muted); transition: color 0.2s, border-color 0.2s; }
-    .btn-sm:hover { color: var(--text); border-color: var(--text); }
-    .btn-dark { background: var(--text); color: white !important; border-color: var(--text); }
-    .btn-dark:hover { opacity: 0.8; }
+    :root {
+      --bg: #f9f8f6;
+      --surface: #fff;
+      --border: #e8e6e1;
+      --text: #1a1a1a;
+      --muted: #888;
+      --radius: 10px;
+      --green: #2d7a4f;
+      --green-bg: #f0faf4;
+      --amber: #b45309;
+      --amber-bg: #fef8ee;
+    }
 
-    .empty { text-align: center; padding: 4rem 2rem; }
-    .empty p { font-size: 0.88rem; color: var(--muted); margin-top: 0.5rem; line-height: 1.6; }
-    .empty code { font-family: 'DM Mono', monospace; font-size: 0.82rem; background: var(--border); padding: 2px 6px; border-radius: 4px; }
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      padding: 2rem 1rem;
+    }
 
-    .section-label { font-family: 'DM Mono', monospace; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); margin-bottom: 1rem; margin-top: 2rem; }
-    .sub-label { font-family: 'DM Mono', monospace; font-size: 0.75rem; letter-spacing: 0.04em; color: var(--text); margin: 1.25rem 0 0.6rem; font-weight: 500; }
+    .wrap {
+      max-width: 900px;
+      margin: 0 auto;
+    }
 
-    .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.75rem; }
-    .stat { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1rem 1.25rem; }
-    .stat .sv { font-family: 'DM Mono', monospace; font-size: 1.6rem; font-weight: 500; color: var(--text); line-height: 1; margin-bottom: 0.3rem; }
-    .stat .sk { font-size: 0.72rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; }
-    .stat.highlight .sv { color: var(--green); }
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2.5rem;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+    }
 
-    .table-wrap { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; margin-bottom: 0.75rem; }
-    table { width: 100%; border-collapse: collapse; }
-    thead th { padding: 0.65rem 1rem; font-size: 0.72rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; font-weight: 500; text-align: left; border-bottom: 1px solid var(--border); background: #fafaf8; font-family: 'DM Mono', monospace; }
-    tbody td { padding: 0.7rem 1rem; font-size: 0.85rem; border-bottom: 1px solid var(--border); }
-    tbody tr:last-child td { border-bottom: none; }
-    tbody tr.best { background: var(--green-bg); }
-    .model-name { font-weight: 500; display: flex; align-items: center; gap: 0.5rem; }
-    .best-tag { font-size: 0.65rem; background: var(--green); color: white; padding: 1px 6px; border-radius: 3px; font-family: 'DM Mono', monospace; letter-spacing: 0.04em; }
-    .dataset-tag { font-size: 0.65rem; background: var(--text); color: white; padding: 1px 6px; border-radius: 3px; font-family: 'DM Mono', monospace; letter-spacing: 0.04em; }
+    .topbar-left {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
 
-    .bar-cell { display: flex; align-items: center; gap: 8px; }
-    .mini-bar { flex: 1; background: var(--border); border-radius: 99px; height: 4px; overflow: hidden; max-width: 60px; }
-    .mini-bar-fill { height: 100%; border-radius: 99px; background: var(--text); }
-    .bar-val { font-family: 'DM Mono', monospace; font-size: 0.8rem; min-width: 38px; }
+    .back {
+      font-size: 0.82rem;
+      color: var(--muted);
+      text-decoration: none;
+    }
 
-    .chart-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
-    .chart-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
-    .chart-card.full { grid-column: 1 / -1; }
-    .chart-label { font-size: 0.7rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; padding: 0.65rem 1rem; border-bottom: 1px solid var(--border); font-family: 'DM Mono', monospace; background: #fafaf8; }
-    .chart-card img { width: 100%; height: auto; display: block; }
+    .back:hover {
+      color: var(--text);
+    }
 
-    .matrix-table td, .matrix-table th { text-align: center; }
-    .matrix-table td:first-child, .matrix-table th:first-child { text-align: left; font-family: 'DM Mono', monospace; font-size: 0.78rem; }
-    .matrix-cell { font-family: 'DM Mono', monospace; }
-    .matrix-diag { background: var(--green-bg); font-weight: 500; }
+    .logo {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.9rem;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
 
-    .report-box { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
-    pre { font-size: 0.75rem; padding: 1rem; overflow-x: auto; font-family: 'DM Mono', monospace; line-height: 1.6; color: var(--muted); background: #fafaf8; white-space: pre-wrap; }
+    .page-title {
+      font-size: 0.82rem;
+      color: var(--muted);
+    }
 
-    .bottom-nav { display: flex; justify-content: center; gap: 1rem; margin-top: 2.5rem; padding-bottom: 2rem; }
+    .btn-sm {
+      font-size: 0.78rem;
+      padding: 0.4rem 0.9rem;
+      border-radius: 6px;
+      cursor: pointer;
+      text-decoration: none;
+      font-family: 'DM Sans', sans-serif;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--muted);
+      transition: color 0.2s, border-color 0.2s;
+    }
+
+    .btn-sm:hover {
+      color: var(--text);
+      border-color: var(--text);
+    }
+
+    .btn-dark {
+      background: var(--text);
+      color: white !important;
+      border-color: var(--text);
+    }
+
+    .btn-dark:hover {
+      opacity: 0.8;
+    }
+
+    .empty {
+      text-align: center;
+      padding: 4rem 2rem;
+    }
+
+    .empty p {
+      font-size: 0.88rem;
+      color: var(--muted);
+      margin-top: 0.5rem;
+      line-height: 1.6;
+    }
+
+    .empty code {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.82rem;
+      background: var(--border);
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+
+    .section-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--muted);
+      margin-bottom: 1rem;
+      margin-top: 2rem;
+    }
+
+    .sub-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.75rem;
+      letter-spacing: 0.04em;
+      color: var(--text);
+      margin: 1.25rem 0 0.6rem;
+      font-weight: 500;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0.75rem;
+    }
+
+    .stat {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1rem 1.25rem;
+    }
+
+    .stat .sv {
+      font-family: 'DM Mono', monospace;
+      font-size: 1.6rem;
+      font-weight: 500;
+      color: var(--text);
+      line-height: 1;
+      margin-bottom: 0.3rem;
+    }
+
+    .stat .sk {
+      font-size: 0.72rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .stat.highlight .sv {
+      color: var(--green);
+    }
+
+    .table-wrap {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      margin-bottom: 0.75rem;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    thead th {
+      padding: 0.65rem 1rem;
+      font-size: 0.72rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-weight: 500;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+      background: #fafaf8;
+      font-family: 'DM Mono', monospace;
+    }
+
+    tbody td {
+      padding: 0.7rem 1rem;
+      font-size: 0.85rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    tbody tr:last-child td {
+      border-bottom: none;
+    }
+
+    tbody tr.best {
+      background: var(--green-bg);
+    }
+
+    .model-name {
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .best-tag {
+      font-size: 0.65rem;
+      background: var(--green);
+      color: white;
+      padding: 1px 6px;
+      border-radius: 3px;
+      font-family: 'DM Mono', monospace;
+      letter-spacing: 0.04em;
+    }
+
+    .dataset-tag {
+      font-size: 0.65rem;
+      background: var(--text);
+      color: white;
+      padding: 1px 6px;
+      border-radius: 3px;
+      font-family: 'DM Mono', monospace;
+      letter-spacing: 0.04em;
+    }
+
+    .bar-cell {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .mini-bar {
+      flex: 1;
+      background: var(--border);
+      border-radius: 99px;
+      height: 4px;
+      overflow: hidden;
+      max-width: 60px;
+    }
+
+    .mini-bar-fill {
+      height: 100%;
+      border-radius: 99px;
+      background: var(--text);
+    }
+
+    .bar-val {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.8rem;
+      min-width: 38px;
+    }
+
+    .chart-grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
+    }
+
+    .chart-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+
+    .chart-card.full {
+      grid-column: 1 / -1;
+    }
+
+    .chart-label {
+      font-size: 0.7rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      padding: 0.65rem 1rem;
+      border-bottom: 1px solid var(--border);
+      font-family: 'DM Mono', monospace;
+      background: #fafaf8;
+    }
+
+    .chart-card img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .matrix-table td,
+    .matrix-table th {
+      text-align: center;
+    }
+
+    .matrix-table td:first-child,
+    .matrix-table th:first-child {
+      text-align: left;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.78rem;
+    }
+
+    .matrix-cell {
+      font-family: 'DM Mono', monospace;
+    }
+
+    .matrix-diag {
+      background: var(--green-bg);
+      font-weight: 500;
+    }
+
+    .report-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+
+    pre {
+      font-size: 0.75rem;
+      padding: 1rem;
+      overflow-x: auto;
+      font-family: 'DM Mono', monospace;
+      line-height: 1.6;
+      color: var(--muted);
+      background: #fafaf8;
+      white-space: pre-wrap;
+    }
+
+    .bottom-nav {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      margin-top: 2.5rem;
+      padding-bottom: 2rem;
+    }
 
     @media (max-width: 600px) {
-      .stats { grid-template-columns: repeat(2, 1fr); }
-      .chart-grid-2 { grid-template-columns: 1fr; }
-      .chart-card.full { grid-column: span 1; }
-      table { font-size: 0.78rem; }
+      .stats {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .chart-grid-2 {
+        grid-template-columns: 1fr;
+      }
+
+      .chart-card.full {
+        grid-column: span 1;
+      }
+
+      table {
+        font-size: 0.78rem;
+      }
     }
   </style>
 </head>
+
 <body>
-<div class="wrap">
+  <div class="wrap">
 
-  <div class="topbar">
-    <div class="topbar-left">
-      <a href="/dashboard" class="back">← back</a>
-      <span class="logo">DataWing</span>
-      <span class="page-title">Multi-Dataset Analysis</span>
+    <div class="topbar">
+      <div class="topbar-left">
+        <a href="/dashboard" class="back" onclick="if(history.length > 1){ event.preventDefault(); history.back(); }">←
+          back</a>
+        <span class="logo">DataWing</span>
+        <span class="page-title">Multi-Dataset Analysis</span>
+      </div>
+      <div style="display:flex;gap:0.5rem;flex-wrap:wrap">
+        <a href="/dashboard" class="btn-sm">Single-Dataset Dashboard</a>
+        {% if has_data %}
+        <a href="{{ url_for('static', filename='charts/multi_dataset/per_dataset_results.csv') }}" download
+          class="btn-sm">↓ Per-Dataset CSV</a>
+        <a href="{{ url_for('static', filename='charts/multi_dataset/pooled_results.csv') }}" download class="btn-sm">↓
+          Pooled CSV</a>
+        <a href="{{ url_for('static', filename='charts/multi_dataset/cross_dataset_matrix.csv') }}" download
+          class="btn-sm">↓ Matrix CSV</a>
+        <a href="{{ url_for('static', filename='charts/multi_dataset/feature_shift_anova.csv') }}" download
+          class="btn-sm">↓ ANOVA CSV</a>
+        <a href="{{ url_for('static', filename='charts/multi_dataset/all_features_tagged.csv') }}" download
+          class="btn-sm">↓ All Features CSV</a>
+        {% endif %}
+        <a href="/multi-analysis" class="btn-sm">Refresh</a>
+      </div>
     </div>
-    <div style="display:flex;gap:0.5rem;flex-wrap:wrap">
-      <a href="/dashboard" class="btn-sm">Single-Dataset Dashboard</a>
-      {% if has_data %}
-      <a href="{{ url_for('static', filename='charts/multi_dataset/per_dataset_results.csv') }}" download class="btn-sm">↓ Per-Dataset CSV</a>
-      <a href="{{ url_for('static', filename='charts/multi_dataset/pooled_results.csv') }}" download class="btn-sm">↓ Pooled CSV</a>
-      <a href="{{ url_for('static', filename='charts/multi_dataset/cross_dataset_matrix.csv') }}" download class="btn-sm">↓ Matrix CSV</a>
-      <a href="{{ url_for('static', filename='charts/multi_dataset/feature_shift_anova.csv') }}" download class="btn-sm">↓ ANOVA CSV</a>
-      <a href="{{ url_for('static', filename='charts/multi_dataset/all_features_tagged.csv') }}" download class="btn-sm">↓ All Features CSV</a>
+
+    {% if not has_data %}
+    <div class="empty">
+      <p>No multi-dataset training data yet.<br>Run <code>python multi_dataset_train.py</code> to populate this page.
+      </p>
+    </div>
+
+    {% else %}
+
+    <div class="section-label">Summary</div>
+    <div class="stats">
+      <div class="stat highlight">
+        <div class="sv">{{ (overall_best["CV Accuracy"] * 100)|round(1) }}%</div>
+        <div class="sk">Best Single-Dataset Accuracy</div>
+      </div>
+      <div class="stat">
+        <div class="sv" style="font-size:0.95rem;padding-top:0.35rem">{{ overall_best.Dataset }}</div>
+        <div class="sk">Best Dataset</div>
+      </div>
+      <div class="stat">
+        <div class="sv" style="font-size:0.95rem;padding-top:0.35rem">{{ overall_best.Model }}</div>
+        <div class="sk">Best Model</div>
+      </div>
+      {% if pooled_best %}
+      <div class="stat">
+        <div class="sv">{{ (pooled_best["CV Accuracy"] * 100)|round(1) }}%</div>
+        <div class="sk">Pooled Model Accuracy</div>
+      </div>
       {% endif %}
-      <a href="/multi-analysis" class="btn-sm">Refresh</a>
     </div>
-  </div>
 
-  {% if not has_data %}
-  <div class="empty">
-    <p>No multi-dataset training data yet.<br>Run <code>python multi_dataset_train.py</code> to populate this page.</p>
-  </div>
+    <div class="section-label">Individual Performance — Per Dataset</div>
+    {% for ds in datasets %}
+    <div class="sub-label">{{ ds.name }}</div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Model</th>
+            <th>CV Accuracy</th>
+            <th>Test Accuracy</th>
+            <th>F1</th>
+            <th>Precision</th>
+            <th>Recall</th>
+            <th>AUC</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for row in ds.rows %}
+          <tr {% if row.Model==ds.best_model %}class="best" {% endif %}>
+            <td>
+              <div class="model-name">
+                {{ row.Model }}
+                {% if row.Model == ds.best_model %}<span class="best-tag">best</span>{% endif %}
+              </div>
+            </td>
+            {% for col in ["CV Accuracy","Accuracy","F1 Score","Precision","Recall","AUC"] %}
+            <td>
+              <div class="bar-cell">
+                <div class="mini-bar">
+                  <div class="mini-bar-fill" style="width:{{ (row[col]*100)|round }}%"></div>
+                </div>
+                <span class="bar-val">{{ (row[col]*100)|round(1) }}%</span>
+              </div>
+            </td>
+            {% endfor %}
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% endfor %}
 
-  {% else %}
-
-  <div class="section-label">Summary</div>
-  <div class="stats">
-    <div class="stat highlight">
-      <div class="sv">{{ (overall_best["CV Accuracy"] * 100)|round(1) }}%</div>
-      <div class="sk">Best Single-Dataset Accuracy</div>
-    </div>
-    <div class="stat">
-      <div class="sv" style="font-size:0.95rem;padding-top:0.35rem">{{ overall_best.Dataset }}</div>
-      <div class="sk">Best Dataset</div>
-    </div>
-    <div class="stat">
-      <div class="sv" style="font-size:0.95rem;padding-top:0.35rem">{{ overall_best.Model }}</div>
-      <div class="sk">Best Model</div>
-    </div>
-    {% if pooled_best %}
-    <div class="stat">
-      <div class="sv">{{ (pooled_best["CV Accuracy"] * 100)|round(1) }}%</div>
-      <div class="sk">Pooled Model Accuracy</div>
+    {% if pooled_rows %}
+    <div class="section-label">Pooled Model — All 3 Datasets Combined</div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Model</th>
+            <th>CV Accuracy</th>
+            <th>Test Accuracy</th>
+            <th>F1</th>
+            <th>Precision</th>
+            <th>Recall</th>
+            <th>AUC</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for row in pooled_rows %}
+          <tr {% if row.Model==pooled_best.Model %}class="best" {% endif %}>
+            <td>
+              <div class="model-name">
+                {{ row.Model }}
+                {% if row.Model == pooled_best.Model %}<span class="best-tag">best</span>{% endif %}
+              </div>
+            </td>
+            {% for col in ["CV Accuracy","Accuracy","F1 Score","Precision","Recall","AUC"] %}
+            <td>
+              <div class="bar-cell">
+                <div class="mini-bar">
+                  <div class="mini-bar-fill" style="width:{{ (row[col]*100)|round }}%"></div>
+                </div>
+                <span class="bar-val">{{ (row[col]*100)|round(1) }}%</span>
+              </div>
+            </td>
+            {% endfor %}
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
     </div>
     {% endif %}
-  </div>
 
-  <div class="section-label">Individual Performance — Per Dataset</div>
-  {% for ds in datasets %}
-  <div class="sub-label">{{ ds.name }}</div>
-  <div class="table-wrap">
-    <table>
-      <thead>
-        <tr>
-          <th>Model</th>
-          <th>CV Accuracy</th>
-          <th>Test Accuracy</th>
-          <th>F1</th>
-          <th>Precision</th>
-          <th>Recall</th>
-          <th>AUC</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for row in ds.rows %}
-        <tr {% if row.Model == ds.best_model %}class="best"{% endif %}>
-          <td>
-            <div class="model-name">
-              {{ row.Model }}
-              {% if row.Model == ds.best_model %}<span class="best-tag">best</span>{% endif %}
-            </div>
-          </td>
-          {% for col in ["CV Accuracy","Accuracy","F1 Score","Precision","Recall","AUC"] %}
-          <td>
-            <div class="bar-cell">
-              <div class="mini-bar"><div class="mini-bar-fill" style="width:{{ (row[col]*100)|round }}%"></div></div>
-              <span class="bar-val">{{ (row[col]*100)|round(1) }}%</span>
-            </div>
-          </td>
-          {% endfor %}
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
-  </div>
-  {% endfor %}
-
-  {% if pooled_rows %}
-  <div class="section-label">Pooled Model — All 3 Datasets Combined</div>
-  <div class="table-wrap">
-    <table>
-      <thead>
-        <tr>
-          <th>Model</th>
-          <th>CV Accuracy</th>
-          <th>Test Accuracy</th>
-          <th>F1</th>
-          <th>Precision</th>
-          <th>Recall</th>
-          <th>AUC</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for row in pooled_rows %}
-        <tr {% if row.Model == pooled_best.Model %}class="best"{% endif %}>
-          <td>
-            <div class="model-name">
-              {{ row.Model }}
-              {% if row.Model == pooled_best.Model %}<span class="best-tag">best</span>{% endif %}
-            </div>
-          </td>
-          {% for col in ["CV Accuracy","Accuracy","F1 Score","Precision","Recall","AUC"] %}
-          <td>
-            <div class="bar-cell">
-              <div class="mini-bar"><div class="mini-bar-fill" style="width:{{ (row[col]*100)|round }}%"></div></div>
-              <span class="bar-val">{{ (row[col]*100)|round(1) }}%</span>
-            </div>
-          </td>
-          {% endfor %}
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
-  </div>
-  {% endif %}
-
-  {% if "cross_dataset_matrix" in charts %}
-  <div class="section-label">Cross-Dataset Generalization</div>
-  <div class="chart-grid-2">
-    <div class="chart-card full">
-      <div class="chart-label">Train on Row → Test on Column (Random Forest)</div>
-      <img src="{{ charts.cross_dataset_matrix }}" alt="">
+    {% if "cross_dataset_matrix" in charts %}
+    <div class="section-label">Cross-Dataset Generalization</div>
+    <div class="chart-grid-2">
+      <div class="chart-card full">
+        <div class="chart-label">Train on Row → Test on Column (Random Forest)</div>
+        <img src="{{ charts.cross_dataset_matrix }}" alt="">
+      </div>
     </div>
-  </div>
 
-  {% if matrix %}
-  <div class="table-wrap" style="margin-top:0.75rem">
-    <table class="matrix-table">
-      <thead>
-        <tr>
-          <th>Train ↓ / Test →</th>
-          {% for col in matrix.columns %}<th>{{ col }}</th>{% endfor %}
-        </tr>
-      </thead>
-      <tbody>
-        {% for r in matrix.rows %}
-        <tr>
-          <td>{{ r.label }}</td>
-          {% for cell in r.cells %}
-          <td class="matrix-cell {% if cell.col == r.label %}matrix-diag{% endif %}">
-            {% if cell.value is not none %}{{ (cell.value*100)|round(1) }}%{% else %}—{% endif %}
-          </td>
+    {% if matrix %}
+    <div class="table-wrap" style="margin-top:0.75rem">
+      <table class="matrix-table">
+        <thead>
+          <tr>
+            <th>Train ↓ / Test →</th>
+            {% for col in matrix.columns %}<th>{{ col }}</th>{% endfor %}
+          </tr>
+        </thead>
+        <tbody>
+          {% for r in matrix.rows %}
+          <tr>
+            <td>{{ r.label }}</td>
+            {% for cell in r.cells %}
+            <td class="matrix-cell {% if cell.col == r.label %}matrix-diag{% endif %}">
+              {% if cell.value is not none %}{{ (cell.value*100)|round(1) }}%{% else %}—{% endif %}
+            </td>
+            {% endfor %}
+          </tr>
           {% endfor %}
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
-  </div>
-  {% endif %}
-  {% endif %}
-
-  {% if "feature_shift_boxplots" in charts or anova_rows %}
-  <div class="section-label">Feature Distribution Shift Across Datasets</div>
-  <div style="background:var(--amber-bg);border:1px solid var(--border);border-radius:var(--radius);padding:0.85rem 1rem;font-size:0.8rem;color:var(--amber);margin-bottom:0.75rem;line-height:1.5">
-    Gambo (single letters), mendeley (single lines), and dysgraphia_patients (full paragraphs) contain different amounts of content per image. A "significant shift" in a non-core feature below is expected for this reason alone and isn't evidence of a real dysgraphia-related difference. Only the 5 <strong>core</strong> features (marked ✓) are used in the Pooled Model and Cross-Dataset Matrix above, since they're the only ones comparable across all three datasets.
-  </div>
-  <div class="chart-grid-2">
-    {% if "feature_shift_boxplots" in charts %}
-    <div class="chart-card full">
-      <div class="chart-label">Most Dataset-Dependent Features (ANOVA)</div>
-      <img src="{{ charts.feature_shift_boxplots }}" alt="">
+        </tbody>
+      </table>
     </div>
     {% endif %}
+    {% endif %}
+
+    {% if "feature_shift_boxplots" in charts or anova_rows %}
+    <div class="section-label">Feature Distribution Shift Across Datasets</div>
+    <div
+      style="background:var(--amber-bg);border:1px solid var(--border);border-radius:var(--radius);padding:0.85rem 1rem;font-size:0.8rem;color:var(--amber);margin-bottom:0.75rem;line-height:1.5">
+      Gambo (single letters), mendeley (single lines), and dysgraphia_patients (full paragraphs) contain different
+      amounts of content per image. A "significant shift" in a non-core feature below is expected for this reason alone
+      and isn't evidence of a real dysgraphia-related difference. Only the 5 <strong>core</strong> features (marked ✓)
+      are used in the Pooled Model and Cross-Dataset Matrix above, since they're the only ones comparable across all
+      three datasets.
+    </div>
+    <div class="chart-grid-2">
+      {% if "feature_shift_boxplots" in charts %}
+      <div class="chart-card full">
+        <div class="chart-label">Most Dataset-Dependent Features (ANOVA)</div>
+        <img src="{{ charts.feature_shift_boxplots }}" alt="">
+      </div>
+      {% endif %}
+    </div>
+
+    {% if anova_rows %}
+    <div class="table-wrap" style="margin-top:0.75rem">
+      <table>
+        <thead>
+          <tr>
+            <th>Feature</th>
+            <th>F-statistic</th>
+            <th>p-value</th>
+            <th>Significant Shift</th>
+            <th>Core Feature</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for row in anova_rows %}
+          <tr>
+            <td>{{ row.Feature }}</td>
+            <td>{{ "%.2f"|format(row["F-stat"]) }}</td>
+            <td>{{ "%.4f"|format(row["p-value"]) }}</td>
+            <td>{{ "Yes" if row["Significant Shift (p<0.05)"] else "No" }}</td>
+            <td>{{ "✓" if row.get("Core Feature (comparable across datasets)") else "—" }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% endif %}
+    {% endif %}
+
+    {% if summary_text %}
+    <div class="section-label">Final Verdict</div>
+    <div class="report-box">
+      <pre>{{ summary_text }}</pre>
+    </div>
+    {% endif %}
+
+    {% endif %}
+
+    <div class="bottom-nav">
+      <a href="/" class="btn-sm btn-dark">Upload handwriting</a>
+      <a href="/dashboard" class="btn-sm">Single-Dataset Dashboard</a>
+    </div>
+
   </div>
-
-  {% if anova_rows %}
-  <div class="table-wrap" style="margin-top:0.75rem">
-    <table>
-      <thead>
-        <tr>
-          <th>Feature</th>
-          <th>F-statistic</th>
-          <th>p-value</th>
-          <th>Significant Shift</th>
-          <th>Core Feature</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for row in anova_rows %}
-        <tr>
-          <td>{{ row.Feature }}</td>
-          <td>{{ "%.2f"|format(row["F-stat"]) }}</td>
-          <td>{{ "%.4f"|format(row["p-value"]) }}</td>
-          <td>{{ "Yes" if row["Significant Shift (p<0.05)"] else "No" }}</td>
-          <td>{{ "✓" if row.get("Core Feature (comparable across datasets)") else "—" }}</td>
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
-  </div>
-  {% endif %}
-  {% endif %}
-
-  {% if summary_text %}
-  <div class="section-label">Final Verdict</div>
-  <div class="report-box">
-    <pre>{{ summary_text }}</pre>
-  </div>
-  {% endif %}
-
-  {% endif %}
-
-  <div class="bottom-nav">
-    <a href="/" class="btn-sm btn-dark">Upload handwriting</a>
-    <a href="/dashboard" class="btn-sm">Single-Dataset Dashboard</a>
-  </div>
-
-</div>
 </body>
+
 </html>

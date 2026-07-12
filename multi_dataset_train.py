@@ -88,7 +88,7 @@ os.makedirs(MODEL_DIR, exist_ok=True)
 # pipeline and charts in a few minutes before committing to the full run.
 # Set back to None for the real, final run used in your report.
 # ---------------------------------------------------------------------------
-MAX_SAMPLES_PER_CLASS = 2000   # large enough to be statistically solid, small enough to finish in reasonable time. Set to None only if you have hours to spare (SVM training especially does not scale well past tens of thousands of rows).
+MAX_SAMPLES_PER_CLASS = 5000   # 5000/class = 10k samples per dataset — statistically solid; set to None only if you have hours to spare (SVM is O(n²)).
 
 # ---------------------------------------------------------------------------
 # Per-dataset class-folder -> binary label mapping.
@@ -542,7 +542,7 @@ def write_summary(per_dataset_df, pooled_df, matrix):
                 f"single lines vs. full paragraphs). Per-dataset results in Section 10.3 "
                 f"still use the full 18-feature set.\n")
     print("\n" + summary)
-    with open(f"{CHARTS_DIR}/final_summary.txt", "w") as f:
+    with open(f"{CHARTS_DIR}/final_summary.txt", "w", encoding="utf-8") as f:
         f.write(summary)
 
 

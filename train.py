@@ -27,7 +27,7 @@ import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
 import seaborn as sns
 
-DATASET_DIR  = "dataset"
+DATASET_DIR  = "dataset/mendeley"
 MODEL_PATH   = "model.pkl"
 REPORT_PATH  = "model_report.txt"
 CHARTS_DIR   = "static/charts"

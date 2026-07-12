@@ -1,4 +1,4 @@
-DataWing — Multi-Dataset Comparative Analysis Summary
+DataWing â€” Multi-Dataset Comparative Analysis Summary
 ============================================================
 
 Best single dataset+model combination:
@@ -8,11 +8,11 @@ Best single dataset+model combination:
 
 Best pooled (all-3-combined) model:
   Model   : Gradient Boosting
-  CV Acc  : 0.7295   Accuracy: 0.727   F1: 0.6043
+  CV Acc  : 0.7262   Accuracy: 0.7244   F1: 0.5527
 
 Generalization check:
-  Avg within-dataset accuracy : 0.7478
-  Avg cross-dataset accuracy  : 0.5173
+  Avg within-dataset accuracy : 0.7481
+  Avg cross-dataset accuracy  : 0.5156
   Verdict: Large drop when testing across datasets -> the model is overfitting to dataset-specific quirks (scanner/pen/paper), not learning general dysgraphia patterns.
 
 Note on methodology: the pooled model and cross-dataset matrix above were trained using only 5 of the 18 features (Mean Letter Height, Mean Letter Width, Corner Density, Component Density, Slant Angle (deg)), since the other features (letter/word spacing, baseline/margin regularity, and raw content-scale features) are not meaningfully comparable across datasets with different content granularity (single letters vs. single lines vs. full paragraphs). Per-dataset results in Section 10.3 still use the full 18-feature set.

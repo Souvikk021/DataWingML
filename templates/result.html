@@ -61,6 +61,40 @@
     .bar-green { background: var(--green); }
     .bar-red { background: var(--red); }
 
+    /* ── Medical Disclaimer Banner ── */
+    .disclaimer-banner {
+      margin: 0;
+      padding: 0.85rem 1.25rem;
+      background: #fffbeb;
+      border-top: 1px solid #fde68a;
+      border-bottom: 1px solid #fde68a;
+      display: flex;
+      gap: 0.75rem;
+      align-items: flex-start;
+    }
+    .disclaimer-icon {
+      font-size: 1.1rem;
+      line-height: 1.4;
+      flex-shrink: 0;
+    }
+    .disclaimer-body {
+      flex: 1;
+    }
+    .disclaimer-title {
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: #92400e;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 0.25rem;
+      font-family: 'DM Mono', monospace;
+    }
+    .disclaimer-text {
+      font-size: 0.76rem;
+      color: #78350f;
+      line-height: 1.55;
+    }
+
     .features-section { padding: 1rem 1.25rem; }
     .features-label { font-size: 0.7rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.75rem; font-family: 'DM Mono', monospace; }
     .feat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.5rem; }
@@ -146,6 +180,21 @@
         {% endif %}
       </div>
     </div>
+
+    {% if ml_dysgraphic or rule_dysgraphic %}
+    <div class="disclaimer-banner">
+      <div class="disclaimer-icon">⚕</div>
+      <div class="disclaimer-body">
+        <div class="disclaimer-title">Doctor Review Required</div>
+        <div class="disclaimer-text">
+          This result indicates possible signs of dysgraphia based on automated handwriting analysis.
+          <strong>This is a screening tool only — it is not a clinical diagnosis.</strong>
+          Please consult a qualified medical professional, educational psychologist, or specialist for
+          an accurate assessment before drawing any conclusions.
+        </div>
+      </div>
+    </div>
+    {% endif %}
 
     <div class="features-section">
       <div class="features-label">Extracted Features</div>
