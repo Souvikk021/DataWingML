@@ -97,6 +97,12 @@ def extract_features(img):
     total_ink     = float(np.sum(thresh > 0))
     corner_density = corner_count / (total_ink + 1e-6)
     baseline_std  = np.std([c[5][1] for c in comps]) / (mean_h + 1e-6)
+    if len(xs) > 10:
+        pts = np.stack([xs, ys], axis=1).astype(np.float32)
+        _, eigvec = cv2.PCACompute(pts, mean=np.array([]))
+        slant_angle_deg = float(np.degrees(np.arctan2(eigvec[0, 1], eigvec[0, 0])))
+    else:
+        slant_angle_deg = 0.0
     return {
         "mean_letter_height": mean_h, "std_letter_height": std_h,
         "mean_letter_width": mean_w,  "std_letter_width": std_w,
@@ -110,7 +116,7 @@ def extract_features(img):
         "horizontal_regularity_baseline_std": float(baseline_std),
         "vertical_regularity_height_std": float(np.std(heights)),
         "margin_alignment_std": float(np.std(lefts)),
-        "slant_angle_deg": 0.0
+        "slant_angle_deg": slant_angle_deg
     }
 
 def load_dataset():
